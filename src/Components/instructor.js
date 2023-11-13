@@ -150,7 +150,7 @@ function Instructor() {
           Swal.fire("Success!", "Record Deleted Successfully", "success").then(
             (result) => {
               if (result.isConfirmed) {
-                window.location.href = `/admin?email=${passemail}`;
+                window.location.href = `/instructor?email=${passemail}`;
               }
             }
           );
@@ -170,6 +170,7 @@ function Instructor() {
   const handleEdit = (student) => {
     window.location.href = `/editCourse?email=${passemail}&name=${name}&course_id=${student.courseId}&course_name=${student.courseName}&instructor_name=${student.professorName}&course_period=${student.period}`;
   };
+  console.log('c',student);
   return (
     <div className="stylecontainer">
       <div className="stylesidebar">
@@ -299,7 +300,7 @@ function Instructor() {
                 </tr>
               </thead>
               <tbody>
-                {student.map((res, index) => {
+                {student?.map((res, index) => {
                   if (res.status === "no" && res.professorName === name) {
                     return (
                       <tr key={index}>
@@ -314,7 +315,7 @@ function Instructor() {
                           &nbsp;
                           <i
                             className="fas fa-trash"
-                            onClick={() => handleDelete(res.course_id)}
+                            onClick={() => handleDelete(res.courseId)}
                           ></i>
                           &nbsp;
                         </td>

@@ -392,7 +392,7 @@ function ProgramCoordinator() {
                 </tr>
               </thead>
               <tbody>
-                {program.map((res, index) => (
+                {program?.map((res, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{res.programName}</td>
