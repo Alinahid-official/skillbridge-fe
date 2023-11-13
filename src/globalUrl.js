@@ -1,0 +1,1 @@
+export const url= 'https://skillbridge-be.onrender.com'
