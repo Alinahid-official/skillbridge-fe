@@ -16,6 +16,7 @@ function ProgramCoordinator() {
   const [sname, setSName] = useState("");
   const [semail, setSEmail] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [student, setStudent] = useState([]);
   const loadPrograms2 = async () => {
     const programResults = await axios.get(
       "https://sxt9335.uta.cloud/viewPrograms2.php"
@@ -75,7 +76,10 @@ function ProgramCoordinator() {
         console.error("Error:", error);
       });
   };
-
+  const handleGradeEdit = (student) => {
+    console.log(student.email, "jhdsgjhsdgfjhfj");
+    window.location.href = `/editGrade?passemail=${email}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=pc`;
+  };
   const handleProgramEdit = (program) => {
     window.location.href = `/editPC?email=${email}&p_id=${program.p_id}&programName=${program.programName}&programDescription=${program.programDescription}&programOrganizer=${program.programOrganizer}&startDate=${program.startDate}&endDate=${program.endDate}`;
   };
@@ -115,6 +119,14 @@ function ProgramCoordinator() {
   const [programs, setPrograms] = useState("");
   const [allStudents, setAllStudents] = useState("");
   const [enStudents, setEnStudents] = useState("");
+  const loadStudents = async () => {
+    const studentResults = await axios.get(
+      "https://sxt9335.uta.cloud/viewQuiz.php"
+    );
+    setStudent(studentResults.data.studentResults);
+    console.log("inside studentResults view",studentResults.data.studentResults);
+  
+  };
   useEffect(() => {
     fetch("https://sxt9335.uta.cloud/fetchPCCounts.php")
       .then((response) => response.text())
@@ -128,8 +140,10 @@ function ProgramCoordinator() {
         console.error("Error:", error);
       });
   }, []);
+
   useEffect(() => {
     loadPrograms();
+    loadStudents();
   }, []);
   useEffect(() => {
     loadPrograms1();
@@ -181,6 +195,7 @@ function ProgramCoordinator() {
         });
       });
   };
+  
   return (
     <div className="pccontainer">
       <div className="pcsidebar">
@@ -448,6 +463,52 @@ function ProgramCoordinator() {
             </table>
           </div>
         </div>
+        <div className="StyleAllRoles">
+            <div className="styleheading">
+              <h2> Assessments</h2>
+            </div>
+            <table className="styleroles">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Student Email</th>
+                  <th>Assessment Link</th>
+                  <th>Resources</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Grade</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {student?.map((res, index) => {
+                  if (res.status === "yes" ) {
+                    return (
+                      <tr key={index}>
+                        <td>{res.studentName}</td>
+                        <td>{res.email}</td>
+                        <td>{res.quizlink}</td>
+                        <td>{res.resources}</td>
+                        <td>{res.startTime}</td>
+                        <td>{res.endTime}</td>
+                        <td>{res.grade}</td>
+                        <td>
+                          <i
+                            className="fas fa-edit"
+                            onClick={() => handleGradeEdit(res)}
+                          ></i>
+                          &nbsp;
+                          {/* <i className="fas fa-trash" onClick={() => handleDelete(res.course_id)}></i> */}
+                          &nbsp;
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return null; // If studentName is null, return null to skip rendering
+                })}
+              </tbody>
+            </table>
+          </div>
         <div className="stylefeedback">
           <div className="stylefeedback1">
             <h1>Contact Students</h1>

@@ -11,6 +11,7 @@ function EditGrade() {
   const searchParams = new URLSearchParams(search);
   const passemail = searchParams.get("passemail");
   const intialEmail_id = searchParams.get("email");
+  const role = searchParams.get("role");
   const courseId = searchParams.get("courseId");
   console.log("email jsdjcf", intialEmail_id);
 
@@ -140,7 +141,7 @@ function EditGrade() {
               />
               {/* <a href="login.html" className="signforgot-pw">Sign in instead</a> */}
               <Link
-                to={`/instructor?email=${passemail}`}
+                to={role==='pc'?`/pc?email=${passemail}`: role==='QAOrganizer'? `/QAOrganizer?email=${passemail}`:`/instructor?email=${passemail}`}
                 className="signforgot-pw"
               >
                 Go Back

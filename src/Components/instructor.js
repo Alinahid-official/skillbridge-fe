@@ -170,7 +170,7 @@ function Instructor() {
   const handleEdit = (student) => {
     window.location.href = `/editCourse?email=${passemail}&name=${name}&course_id=${student.courseId}&course_name=${student.courseName}&instructor_name=${student.professorName}&course_period=${student.period}`;
   };
-  console.log('c',student);
+  console.log('c',courses);
   return (
     <div className="stylecontainer">
       <div className="stylesidebar">
@@ -368,7 +368,7 @@ function Instructor() {
           {/* Grades */}
           <div className="StyleAllRoles">
             <div className="styleheading">
-              <h2>Upcoming Assessments</h2>
+              <h2> Assessments</h2>
             </div>
             <table className="styleroles">
               <thead>

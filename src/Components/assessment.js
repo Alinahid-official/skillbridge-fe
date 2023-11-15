@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 function Assessment() {
   const { search } = useLocation();
@@ -22,6 +23,7 @@ function Assessment() {
   const [instructorName, setInstructorName] = useState("");
   const [coursePeriod, setPeriod] = useState("");
   const [name, setName] = useState("");
+  const [student, setStudent] = useState([]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -63,7 +65,14 @@ function Assessment() {
         });
       });
   };
-
+  const loadStudents = async () => {
+    const studentResults = await axios.get(
+      "https://sxt9335.uta.cloud/viewQuiz.php"
+    );
+    setStudent(studentResults.data.studentResults);
+    console.log("inside studentResults view");
+    console.log(studentResults.data.studentResults);
+  };
   useEffect(() => {
     fetch("https://sxt9335.uta.cloud/fetchCourseIdEmail.php")
       .then((response) => response.json())
@@ -89,12 +98,16 @@ function Assessment() {
       .catch((error) => {
         console.error("Error:", error);
       });
+
+      loadStudents();
+      
   }, []);
 
   const handleCourseSelect = (e) => {
     const selectedCourseId = e.target.value;
     setSelectedCourse(selectedCourseId);
   };
+
 
   return (
     <div>
@@ -119,7 +132,7 @@ function Assessment() {
               method="POST"
               className="signform"
             >
-              <h3>Add Courses</h3>
+              <h3>Add Assessment</h3>
               <div className="signselect-container">
                 <select
                   name="course_id"
@@ -127,17 +140,16 @@ function Assessment() {
                   onChange={handleCourseSelect}
                 >
                   <option value="">Select a course</option>
-                  {[...uniqueCourseIds].map((courseId, index) => {
-                    const course = courseData.find(
-                      (course) => course.courseId === courseId
-                    );
-                    if (course && course.professorName === name) {
+                  {student?.map((res, index) => {
+                    if (res.status === "no" && res.professorName === name){
                       return (
-                        <option key={index} value={course.courseId}>
-                          {course.courseId}
+                        <option key={index} value={res.courseId}>
+                          {res.courseId}
                         </option>
                       );
                     }
+                    
+                   
                     return null;
                   })}
                 </select>

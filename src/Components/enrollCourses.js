@@ -14,6 +14,8 @@ function EnrollCourses() {
   const [instructorName, setInstructorName] = useState("");
   const [coursePeriod, setPeriod] = useState("");
   const [name, setName] = useState("");
+  const [classes, setClasses] = useState([]);
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -64,6 +66,26 @@ function EnrollCourses() {
         });
       });
   };
+  const loadClasses = () => {
+    fetch("https://sxt9335.uta.cloud/viewClassesEnrolled.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `email=${email}`,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setClasses(data.classes);
+        } else {
+          console.error("Server response indicated an error.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
   useEffect(() => {
     fetch("https://sxt9335.uta.cloud/fetchCourseID.php")
       .then((response) => response.json())
@@ -88,6 +110,8 @@ function EnrollCourses() {
       .catch((error) => {
         console.error("Error:", error);
       });
+      
+    loadClasses();
   }, []);
 
   const fetchCourseInfo = (courseId) => {
@@ -140,11 +164,18 @@ function EnrollCourses() {
                 onChange={handleCourseSelect}
               >
                 <option value="">Select a course</option>
-                {course.map((courses, index) => (
-                  <option key={index} value={courses}>
-                    {courses}
-                  </option>
-                ))}
+                {course.map((courses, index) => {
+                  console.log(courses);
+                  const c= classes.find((c) => c.courseId === courses);
+                  if(!c){
+                    return (
+                      <option key={index} value={courses}>
+                        {courses}
+                      </option>
+                    )
+                  }
+                  
+                })}
               </select>
 
               <div className="signselect-arrow"></div>

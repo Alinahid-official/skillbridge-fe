@@ -247,7 +247,7 @@ function Student() {
               {/* <Link to={`/addProgram?email=${email}`} className="stylebtn">
                 Add Program
               </Link> */}
-              <h2>Manage Courses</h2>
+              <h2>Upcoming Assessments</h2>
             </div>
             <table className="styleroles">
               <thead>

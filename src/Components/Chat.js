@@ -127,7 +127,7 @@ function Chat({ socket, username, room, passemail }) {
     try {
       const res = await axios.get(`${url}/users`)
       setContacts(res.data)
-      console.log(res.data)
+      console.log('res',res)
 
     } catch (error) {
       console.error("Error:", error);
@@ -161,7 +161,7 @@ function Chat({ socket, username, room, passemail }) {
 
   console.log(to);
   return (
-    <div className="stylecontainer" style={{ marginTop: "-783px" }}>
+    <div className="stylecontainer" style={{position:'absolute',top:'0'}} >
       <div className="stylesidebar">
         <link
           rel="stylesheet"
@@ -459,7 +459,8 @@ function Chat({ socket, username, room, passemail }) {
           </div>
         </div> */}
 
-        <div style={{
+        <div
+         style={{
           display: "flex",
           height: "100vh",
         }}>
