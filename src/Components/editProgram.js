@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function EditProgram() {
   const { search } = useLocation();
@@ -44,7 +45,7 @@ function EditProgram() {
     formData.append("programOrganizer", program.programOrganizer);
     formData.append("startDate", program.startDate);
     formData.append("endDate", program.endDate);
-    fetch("https://sxt9335.uta.cloud/editProgram.php", {
+    fetch(`${url2}/editProgram`, {
       method: "POST",
       body: formData,
     })

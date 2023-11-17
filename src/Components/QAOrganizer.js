@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import avatar1 from "../assets/avatar4.jpeg";
 import DropDownProfile from "./dropdown";
 import { useLocation } from "react-router-dom";
+import { url2 } from "../globalUrl";
 function QAOrganizer() {
   const [openProfile, setOpenProfile] = useState(false);
   const { search } = useLocation();
@@ -17,8 +18,8 @@ function QAOrganizer() {
   const [feedback, setFeedback] = useState("");
   const [student, setStudent] = useState([]);
   const loadQA = async () => {
-    const qaResults = await axios.get("https://sxt9335.uta.cloud/viewQA.php");
-    setQuality(qaResults.data.qaResults);
+    const qaResults = await axios.get(`${url2}/viewPolicies`);
+    setQuality(qaResults.data);
     console.log(qaResults.data.qaResults);
   };
 
@@ -30,9 +31,9 @@ function QAOrganizer() {
   };
   const loadStudents = async () => {
     const studentResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewQuiz.php"
+     `${url2}/viewQuiz`
     );
-    setStudent(studentResults.data.studentResults);
+    setStudent(studentResults.data);
     console.log("inside studentResults view",studentResults.data.studentResults);
   
   };
@@ -49,7 +50,7 @@ function QAOrganizer() {
   const [pastpolicy, setPPolicy] = useState("");
   const [futurepolicy, setFPolicy] = useState("");
   useEffect(() => {
-    fetch("https://sxt9335.uta.cloud/fetchQACounts.php")
+    fetch(`${url2}/countPolicy`)
       .then((response) => response.text())
       .then((data) => {
         const [policy, ppolicy, fpolicy] = data.split(",");
@@ -63,7 +64,7 @@ function QAOrganizer() {
   }, []);
   const handleDelete = (policyId) => {
     // Send a request to the PHP backend to delete the course
-    fetch("https://sxt9335.uta.cloud/deleteQA.php", {
+    fetch(`${url2}/deletePolicy`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -98,7 +99,7 @@ function QAOrganizer() {
 
   const [name, setName] = useState("");
   const loadPrograms = async () => {
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -4,6 +4,7 @@ import "../css/signup.css";
 import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function Signup() {
   const [firstname, setFirstname] = useState("");
@@ -38,7 +39,7 @@ function Signup() {
       Swal.fire("Error!", "Please select a role", "error");
       return;
     }
-    fetch("https://sxt9335.uta.cloud/signup.php", {
+    fetch(`${url2}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -47,13 +48,14 @@ function Signup() {
     })
       .then((response) => response.text())
       .then((data) => {
+        console.log(data);
         if (data === "User registered successfully") {
           Swal.fire(
             "Success!",
             "User registered successfully!",
             "success"
           ).then((result) => {
-            if (result.isConfirmed) {
+            if (result) {
               window.location.href = "/login";
             }
           });
@@ -70,9 +72,9 @@ function Signup() {
         } else {
           Swal.fire("Oops!", "Failed to register user", "error").then(
             (result) => {
-              if (result.isConfirmed) {
-                window.location.href = "/signup";
-              }
+              // if (result.isConfirmed) {
+              //   window.location.href = "/signup";
+              // }
             }
           );
         }

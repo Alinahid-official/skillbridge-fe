@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function AddPCProgram() {
   const { search } = useLocation();
@@ -19,7 +20,7 @@ function AddPCProgram() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch("https://sxt9335.uta.cloud/addProgram.php", {
+    fetch(`${url2}/addProgram`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

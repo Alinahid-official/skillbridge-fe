@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function AddQA() {
   const { search } = useLocation();
@@ -16,7 +17,7 @@ function AddQA() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch("https://sxt9335.uta.cloud/addQA.php", {
+    fetch(`${url2}/addPolies`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -8,6 +8,7 @@ import backgroundImage from "../assets/cards.jpg";
 import axios from "axios";
 import DropDownProfile from "./dropdown";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 function Student() {
   const [openProfile, setOpenProfile] = useState(false);
   const { search } = useLocation();
@@ -22,9 +23,9 @@ function Student() {
   };
   const loadPrograms2 = async () => {
     const programResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewPrograms2.php"
+      `${url2}/viewEnrolledPrograms`
     );
-    setProgram(programResults.data.AllPrograms);
+    setProgram(programResults.data);
     console.log("inside proframs view");
     console.log(programResults.data.AllPrograms);
   };
@@ -33,7 +34,7 @@ function Student() {
     loadPrograms2();
   }, []);
   const loadPrograms = async () => {
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -51,32 +52,32 @@ function Student() {
   useEffect(() => {
     loadPrograms();
   }, []);
-  const loadClasses = () => {
-    fetch("https://sxt9335.uta.cloud/viewClassesEnrolled.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `email=${email}`,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          setClasses(data.classes);
-        } else {
-          console.error("Server response indicated an error.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  // const loadClasses = () => {
+  //   fetch("https://sxt9335.uta.cloud/viewClassesEnrolled.php", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/x-www-form-urlencoded",
+  //     },
+  //     body: `email=${email}`,
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       if (data.success) {
+  //         setClasses(data.classes);
+  //       } else {
+  //         console.error("Server response indicated an error.");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
 
   useEffect(() => {
-    loadClasses();
+    // loadClasses();
   }, []);
   const loadExams = () => {
-    fetch("https://sxt9335.uta.cloud/viewClassesEnrolled.php", {
+    fetch(`${url2}/viewEnrolledCourses`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -85,8 +86,9 @@ function Student() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
-          setClasses(data.classes);
+        if (data) {
+          console.log('dd',data);
+          setClasses(data);
         } else {
           console.error("Server response indicated an error.");
         }
@@ -99,6 +101,7 @@ function Student() {
   useEffect(() => {
     loadExams();
   }, []);
+  console.log(classes);
   return (
     <div className="stylecontainer">
       <div className="stylesidebar">
@@ -212,7 +215,7 @@ function Student() {
         {/* new Cards */}
 
         <div className="stylecards">
-          {classes.map((res, index) => (
+          {classes?.map((res, index) => (
             <div
               className="homeheroservice-item"
               key={index}
@@ -262,7 +265,7 @@ function Student() {
                 </tr>
               </thead>
               <tbody>
-                {classes.map((res, index) => (
+                {classes?.map((res, index) => (
                   <tr key={index}>
                     <td>{res.courseName}</td>
                     <td>{res.exam}</td>
@@ -308,7 +311,7 @@ function Student() {
                 </tr>
               </thead>
               <tbody>
-                {program.map((res, index) => {
+                {program?.map((res, index) => {
                   // Check if res.semail matches the email
                   if (res.semail === email) {
                     return (

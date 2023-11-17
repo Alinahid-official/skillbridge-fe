@@ -4,6 +4,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 function EnrollPrograms() {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
@@ -28,7 +29,7 @@ function EnrollPrograms() {
     formData.append("s", s);
     formData.append("ss", ss);
 
-    fetch("https://sxt9335.uta.cloud/enrollProgram.php", {
+    fetch(`${url2}/enrollProgram`, {
       method: "POST",
       body: formData,
     })
@@ -68,7 +69,7 @@ function EnrollPrograms() {
       });
   };
   useEffect(() => {
-    fetch("https://sxt9335.uta.cloud/fetchPrograms.php")
+    fetch(`${url2}/viewPrograms`)
       .then((response) => response.json())
       .then((data) => {
         setCourse(data);
@@ -76,7 +77,7 @@ function EnrollPrograms() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -93,34 +94,44 @@ function EnrollPrograms() {
   }, []);
 
   const fetchCourseInfo = (courseId) => {
-    fetch("https://sxt9335.uta.cloud/fetchPrograms2.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `courseId=${courseId}`,
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        const [courseName, instructorName, period, s, ss] = data.split(","); // Split data into an array
-        setCourseName(courseName);
-        setInstructorName(instructorName);
-        setPeriod(period);
-        setS(s);
-        setSS(ss);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        Swal.fire(
-          "Oops!",
-          "An error occurred while fetching the user.",
-          "error"
-        ).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/student?email=${email}`;
-          }
-        });
-      });
+    console.log('cid',courseId);
+    const sc= course.find((course) =>{
+      console.log('course',course,courseId);
+      return course.p_id == courseId;
+    });
+    setCourseName(sc?.programOrganizer);
+        setInstructorName(sc?.programDescription);
+        setPeriod(sc?.startDate);
+        setS(sc?.endDate);
+        setSS(sc?.venue);
+    // fetch("https://sxt9335.uta.cloud/fetchPrograms2.php", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   body: `courseId=${courseId}`,
+    // })
+    //   .then((response) => response.text())
+    //   .then((data) => {
+    //     const [courseName, instructorName, period, s, ss] = data.split(","); // Split data into an array
+    //     setCourseName(courseName);
+    //     setInstructorName(instructorName);
+    //     setPeriod(period);
+    //     setS(s);
+    //     setSS(ss);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //     Swal.fire(
+    //       "Oops!",
+    //       "An error occurred while fetching the user.",
+    //       "error"
+    //     ).then((result) => {
+    //       if (result.isConfirmed) {
+    //         window.location.href = `/student?email=${email}`;
+    //       }
+    //     });
+    //   });
   };
 
   const handleCourseSelect = (e) => {
@@ -145,8 +156,8 @@ function EnrollPrograms() {
               >
                 <option value="">Select a program</option>
                 {course.map((courses, index) => (
-                  <option key={index} value={courses}>
-                    {courses}
+                  <option key={index} value={courses?.p_id}>
+                    {courses.programName}
                   </option>
                 ))}
               </select>

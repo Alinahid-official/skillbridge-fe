@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function EditGrade() {
   const { search } = useLocation();
@@ -44,7 +45,7 @@ function EditGrade() {
     formData.append("resources", exam.resources);
     alert(intialEmail_id);
     alert(exam.grade);
-    fetch("https://sxt9335.uta.cloud/editGrade.php", {
+    fetch(`${url2}/editGrade`, {
       method: "POST",
       body: formData,
     })
@@ -55,7 +56,7 @@ function EditGrade() {
           Swal.fire("Success!", "Grade updated successfully!", "success").then(
             (result) => {
               if (result.isConfirmed) {
-                window.location.href = `/instructor?email=${passemail}`;
+                window.location.href = `/${role}?email=${passemail}`;
               }
             }
           );
@@ -64,7 +65,7 @@ function EditGrade() {
           Swal.fire("Oops!", "Failed to update course", "error").then(
             (result) => {
               if (result.isConfirmed) {
-                window.location.href = `/instructor?email=${passemail}`;
+                window.location.href = `/${role}?email=${passemail}`;
               }
             }
           );
@@ -75,12 +76,12 @@ function EditGrade() {
         Swal.fire("Success!", "Grade updated successfully!", "success")
           .then((result) => {
             if (result.isConfirmed) {
-              window.location.href = `/instructor?email=${passemail}`;
+              window.location.href = `/${role}?email=${passemail}`;
             }
           })
           .then((result) => {
             if (result.isConfirmed) {
-              window.location.href = `/instructor?email=${passemail}`;
+              window.location.href = `/${role}?email=${passemail}`;
             }
           });
       });

@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function AddCourses() {
   const { search } = useLocation();
@@ -22,7 +23,7 @@ function AddCourses() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     alert(instructor_name);
-    fetch("https://sxt9335.uta.cloud/addCourse.php", {
+    fetch(`${url2}/addCourse`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import DropDownProfile from "./dropdown";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 function ProgramCoordinator() {
   const [openProfile, setOpenProfile] = useState(false);
   const { search } = useLocation();
@@ -19,9 +20,10 @@ function ProgramCoordinator() {
   const [student, setStudent] = useState([]);
   const loadPrograms2 = async () => {
     const programResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewPrograms2.php"
+      `${url2}/viewEnrolledPrograms`
     );
-    setProgram2(programResults.data.AllPrograms);
+    setProgram2(programResults.data);
+    setEnStudents(programResults.data.length);
     console.log("inside proframs view");
     console.log(programResults.data.AllPrograms);
   };
@@ -34,7 +36,7 @@ function ProgramCoordinator() {
     loadPrograms2();
   }, []);
   const loadPrograms = async () => {
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -56,12 +58,13 @@ function ProgramCoordinator() {
 
   const loadPrograms1 = async () => {
     const programResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewPrograms.php"
+      `${url2}/viewPrograms`
     );
-    setProgram(programResults.data.AllPrograms);
+    setProgram(programResults.data);
+    setPrograms(programResults.data.length);
     console.log("inside proframs view");
     console.log(programResults.data.AllPrograms);
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -86,7 +89,7 @@ function ProgramCoordinator() {
 
   const handleProgramDelete = (programName) => {
     // Send a request to the PHP backend to delete the course
-    fetch("https://sxt9335.uta.cloud/deleteProgram.php", {
+    fetch(`${url2}/deleteProgram`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -121,20 +124,19 @@ function ProgramCoordinator() {
   const [enStudents, setEnStudents] = useState("");
   const loadStudents = async () => {
     const studentResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewQuiz.php"
+      `${url2}/viewQuiz`
     );
-    setStudent(studentResults.data.studentResults);
+    setStudent(studentResults.data);
     console.log("inside studentResults view",studentResults.data.studentResults);
   
   };
   useEffect(() => {
-    fetch("https://sxt9335.uta.cloud/fetchPCCounts.php")
+    fetch(`${url2}/countAllStudents`)
       .then((response) => response.text())
       .then((data) => {
-        const [allStudents, program, enStudents] = data.split(",");
-        setPrograms(program);
-        setAllStudents(allStudents);
-        setEnStudents(enStudents);
+        
+        setAllStudents(data);
+      
       })
       .catch((error) => {
         console.error("Error:", error);

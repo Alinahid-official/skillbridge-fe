@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import avatar from "../assets/logo.png";
 import avatar1 from "../assets/avatar.png";
 import Swal from "sweetalert2/dist/sweetalert2.js";
+import { url2 } from "../globalUrl";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ function Login() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch("https://sxt9335.uta.cloud/login.php", {
+    fetch(`${url2}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -22,10 +23,12 @@ function Login() {
     })
       .then((response) => response.text())
       .then((data) => {
+        console.log('dd',data);
         if (data.startsWith("Login Successful")) {
           const roleIndex = data.indexOf("| Role:");
           if (roleIndex !== -1) {
             const userRole = data.substring(roleIndex + 8).trim();
+            console.log(userRole)            
             switch (userRole) {
               case "Admin":
                 window.location.href = `/admin?email=${email}`;

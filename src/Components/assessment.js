@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { url2 } from "../globalUrl";
 
 function Assessment() {
   const { search } = useLocation();
@@ -27,7 +28,7 @@ function Assessment() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch("https://sxt9335.uta.cloud/addExam.php", {
+    fetch(`${url2}/addQuiz`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -67,9 +68,9 @@ function Assessment() {
   };
   const loadStudents = async () => {
     const studentResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewQuiz.php"
+      `${url2}/viewQuiz`
     );
-    setStudent(studentResults.data.studentResults);
+    setStudent(studentResults.data);
     console.log("inside studentResults view");
     console.log(studentResults.data.studentResults);
   };
@@ -84,7 +85,7 @@ function Assessment() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function EditUser() {
   const { search } = useLocation();
@@ -42,7 +43,7 @@ function EditUser() {
     formData.append("password", user.password);
     formData.append("role", user.role);
 
-    fetch("https://sxt9335.uta.cloud/editUser.php", {
+    fetch(`${url2}/editUser`, {
       method: "POST",
       body: formData,
     })

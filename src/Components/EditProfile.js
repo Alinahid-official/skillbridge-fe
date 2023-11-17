@@ -4,6 +4,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 function EditProfile() {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
@@ -36,7 +37,7 @@ function EditProfile() {
       Swal.fire("Error!", "Please enter a valid password format", "error");
       return;
     }
-    fetch("https://sxt9335.uta.cloud/updateprofile.php", {
+    fetch(`${url2}/editUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -53,6 +54,7 @@ function EditProfile() {
             "Details updated successfully!",
             "success"
           ).then((result) => {
+
             if (result.isConfirmed && userRole === "Admin") {
               window.location.href = `/admin?email=${email}`;
             } else if (result.isConfirmed && userRole === "Student") {

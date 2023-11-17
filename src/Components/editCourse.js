@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function EditCourse() {
   const { search } = useLocation();
@@ -42,7 +43,7 @@ function EditCourse() {
     formData.append("course_name", course.course_name);
     formData.append("instructor_name", course.instructor_name);
     formData.append("course_period", course.course_period);
-    fetch("https://sxt9335.uta.cloud/editCourse.php", {
+    fetch(`${url2}/editCourse`, {
       method: "POST",
       body: formData,
     })

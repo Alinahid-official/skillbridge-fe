@@ -6,6 +6,8 @@ import axios from "axios";
 import DropDownProfile from "./dropdown";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
+import { set } from "lodash";
 function Instructor() {
   const [openProfile, setOpenProfile] = useState(false);
   const { search } = useLocation();
@@ -19,13 +21,14 @@ function Instructor() {
   const [students, setStudents] = useState("");
   const [assess, setAssessments] = useState("");
   const [courses, setCourses] = useState("");
+  const  [course, setCourse] = useState([]);
 
   const handleCloseModal = () => {
     setOpenProfile(false);
   };
 
   const loadPrograms = async () => {
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -47,13 +50,37 @@ function Instructor() {
 
   const loadStudents = async () => {
     const studentResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewQuiz.php"
+      `${url2}/viewQuiz`
     );
-    setStudent(studentResults.data.studentResults);
+    setStudent(studentResults.data);
+    let c= 0;
+    let d= 0;
+    studentResults?.data?.map((res, index) => {
+      if (res.status === "no" && res.professorName === name) {
+        c++;
+      }
+      if (res.status === "yes" && res.professorName === name) {
+        d++;
+      }
+    })
+
+      setCourses(c);
+      setStudents(d);
+      setAssessments(d);
     console.log("inside studentResults view");
     console.log(studentResults.data.studentResults);
   };
 
+  const loadCourses = async () => {
+    const courseResults = await axios.get(
+      `${url2}/viewCourses`
+    );
+    setCourse(courseResults.data.filter((res, index) => res.professorName === name));
+
+    console.log("inside courseResults view");
+    console.log(courseResults.data.courseResults);
+  }
+  
   const handleStudentEdit = (student) => {
     console.log(student.email, "jhdsgjhsdgfjhfj");
     window.location.href = `/editQuiz?passemail=${passemail}&studentName=${student.studentName}&email=${student.email}&exam=${student.exam}&startTime=${student.startTime}&endTime=${student.endTime}&quizlink=${student.quizlink}`;
@@ -61,7 +88,7 @@ function Instructor() {
 
   const handleGradeEdit = (student) => {
     console.log(student.email, "jhdsgjhsdgfjhfj");
-    window.location.href = `/editGrade?passemail=${passemail}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}`;
+    window.location.href = `/editGrade?passemail=${passemail}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=instructor`;
   };
   useEffect(() => {
     loadStudents();
@@ -116,20 +143,17 @@ function Instructor() {
   };
 
   useEffect(() => {
-    fetch("https://sxt9335.uta.cloud/fetchInstructorC.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `email=${passemail}`,
+    fetch(`${url2}/countAllStudents`, {
+      method: "GET",
+      
     })
       .then((response) => response.text())
       .then((data) => {
-        const [users, students, assess, courses] = data.split(",");
-        setUsers(users);
-        setStudents(students);
-        setAssessments(assess);
-        setCourses(courses);
+        // const [users, students, assess, courses] = data.split(",");
+        setUsers(data);
+        // setStudents(students);
+        // setAssessments(assess);
+        // setCourses(courses);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -137,7 +161,7 @@ function Instructor() {
   }, []);
   const handleDelete = (courseId) => {
     // Send a request to the PHP backend to delete the course
-    fetch("https://sxt9335.uta.cloud/deletecourse.php", {
+    fetch(`${url2}/deleteCourse`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -170,7 +194,7 @@ function Instructor() {
   const handleEdit = (student) => {
     window.location.href = `/editCourse?email=${passemail}&name=${name}&course_id=${student.courseId}&course_name=${student.courseName}&instructor_name=${student.professorName}&course_period=${student.period}`;
   };
-  console.log('c',courses);
+  console.log('c',name);
   return (
     <div className="stylecontainer">
       <div className="stylesidebar">
@@ -347,6 +371,7 @@ function Instructor() {
               </thead>
               <tbody>
                 {student.map((res, index) => {
+                  console.log('rr',res);
                   if (res.status === "yes" && res.professorName === name) {
                     return (
                       <tr key={index}>

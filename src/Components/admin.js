@@ -7,6 +7,8 @@ import DropDownProfile from "./dropdown";
 import "font-awesome/css/font-awesome.min.css";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
+import { set } from "lodash";
 
 function Admin() {
   const [openProfile, setOpenProfile] = useState(false);
@@ -30,12 +32,13 @@ function Admin() {
   // Program handler start
   const loadPrograms = async () => {
     const programResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewPrograms.php"
+      `${url2}/viewPrograms`
     );
-    setProgram(programResults.data.AllPrograms);
+    setProgram(programResults.data);
+    setPrograms(programResults.data.length);
     console.log("inside proframs view");
     console.log(programResults.data.AllPrograms);
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -61,7 +64,7 @@ function Admin() {
 
   const handleProgramDelete = (programName) => {
     // Send a request to the PHP backend to delete the course
-    fetch("https://sxt9335.uta.cloud/deleteProgram.php", {
+    fetch(`${url2}/deleteProgram`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -99,12 +102,18 @@ function Admin() {
   // Program handler End
   // User handler Start
   const loadUsers = async () => {
-    const userResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewUsers.php"
-    );
-    setUser(userResults.data.AllUsers);
-    console.log("inside users view");
-    console.log(userResults.data.AllUsers);
+    try{
+      const userResults = await axios.get(
+        `${url2}/viewUsers`
+      );
+      setUser(userResults.data);
+      setUsers(userResults.data.length);
+      console.log("inside users view");
+    
+    }catch(error){
+      console.log(error);
+    }
+   
   };
 
   const handleUserEdit = (user) => {
@@ -113,7 +122,7 @@ function Admin() {
 
   const handleUserDelete = (emailID) => {
     // Send a request to the PHP backend to delete the course
-    fetch("https://sxt9335.uta.cloud/deleteUser.php", {
+    fetch(`${url2}/deleteUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -155,14 +164,10 @@ function Admin() {
   const [qa, setQA] = useState("");
 
   useEffect(() => {
-    fetch("https://sxt9335.uta.cloud/fetchCounts.php")
-      .then((response) => response.text())
+    fetch(`${url2}/viewPolicies`)
+      .then((response) => response.json())
       .then((data) => {
-        const [user, course, program, policy] = data.split(",");
-        setUsers(user);
-        setCourses(course);
-        setPrograms(program);
-        setPolicies(policy);
+        setPolicies(data.length);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -185,10 +190,11 @@ function Admin() {
   // User handler End
   const loadCourses = async () => {
     const courseResults = await axios.get(
-      "https://sxt9335.uta.cloud/viewCourses.php"
+      `${url2}/viewCourses`
     );
-    setCourse(courseResults.data.AllCourses);
-    console.log(courseResults.data.AllCourses);
+    setCourse(courseResults.data);
+    setCourses(courseResults.data.length);
+    console.log(courseResults.data);
   };
 
   const handleEdit = (course) => {
@@ -202,7 +208,7 @@ function Admin() {
 
   const handleDelete = (courseId) => {
     // Send a request to the PHP backend to delete the course
-    fetch("https://sxt9335.uta.cloud/deletecourse.php", {
+    fetch(`${url2}/deleteCourse`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -279,6 +285,7 @@ function Admin() {
         });
       });
   };
+
   return (
     <div className="stylecontainer">
       <div className="stylesidebar">
@@ -425,7 +432,7 @@ function Admin() {
               </thead>
               <tbody>
                 {course.map((res, index) => {
-                  if (res.status === "no") {
+                  // if (res.status === "no") {
                     return (
                       <tr key={index}>
                         <td>{res.course_name}</td>
@@ -446,8 +453,8 @@ function Admin() {
                         </td>
                       </tr>
                     );
-                  }
-                  return null; // If the condition is not met, return null (or any other placeholder)
+                  // }
+                  // return null; // If the condition is not met, return null (or any other placeholder)
                 })}
               </tbody>
             </table>
