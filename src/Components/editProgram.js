@@ -45,6 +45,7 @@ function EditProgram() {
     formData.append("programOrganizer", program.programOrganizer);
     formData.append("startDate", program.startDate);
     formData.append("endDate", program.endDate);
+
     fetch(`${url2}/editProgram`, {
       method: "POST",
       body: formData,
@@ -78,9 +79,9 @@ function EditProgram() {
           "An error occurred while updating the course.",
           "error"
         ).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/admin?email=${email}`;
-          }
+          // if (result.isConfirmed) {
+          //   window.location.href = `/admin?email=${email}`;
+          // }
         });
       });
   };

@@ -20,20 +20,20 @@ function EnrollCourses() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("course_id", selectedCourse);
-    formData.append("name", name);
+    formData.append("courseId", selectedCourse);
+    formData.append("StudentName", name);
     formData.append("email", email);
     formData.append("courseName", courseName);
-    formData.append("instructorName", instructorName);
-    formData.append("coursePeriod", coursePeriod);
+    formData.append("professorName", instructorName);
+    formData.append("period", coursePeriod);
 
-    fetch(`${url2}/enrollCourse`, {
+    fetch(`${url2}/addQuiz`, {
       method: "POST",
       body: formData,
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data === "Course enrolled successfully") {
+        // if (data === "Course enrolled successfully") {
           Swal.fire(
             "Success!",
             "Course enrolled successfully!",
@@ -43,16 +43,16 @@ function EnrollCourses() {
               window.location.href = `/student?email=${email}`;
             }
           });
-        } else {
-          alert(data);
-          Swal.fire("Oops!", "You have already enrolled", "error").then(
-            (result) => {
-              if (result.isConfirmed) {
-                window.location.href = `/student?email=${email}`;
-              }
-            }
-          );
-        }
+        // } else {
+        //   alert(data);
+        //   Swal.fire("Oops!", "You have already enrolled", "error").then(
+        //     (result) => {
+        //       if (result.isConfirmed) {
+        //         window.location.href = `/student?email=${email}`;
+        //       }
+        //     }
+        //   );
+        // }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -61,14 +61,14 @@ function EnrollCourses() {
           "An error occurred while updating the course.",
           "error"
         ).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/student?email=${email}`;
-          }
+          // if (result.isConfirmed) {
+          //   window.location.href = `/student?email=${email}`;
+          // }
         });
       });
   };
   const loadClasses = () => {
-    fetch("https://sxt9335.uta.cloud/viewClassesEnrolled.php", {
+    fetch(`${url2}/viewEnrolledCourses`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -77,18 +77,16 @@ function EnrollCourses() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
-          setClasses(data.classes);
-        } else {
-          console.error("Server response indicated an error.");
-        }
+       
+          setClasses(data);
+       
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
   useEffect(() => {
-    fetch("https://sxt9335.uta.cloud/fetchCourseID.php")
+    fetch(`${url2}/viewCourses`)
       .then((response) => response.json())
       .then((data) => {
         setCourse(data);
@@ -97,7 +95,7 @@ function EnrollCourses() {
         alert(error);
         console.error("Error fetching data:", error);
       });
-    fetch("https://sxt9335.uta.cloud/getName.php", {
+    fetch(`${url2}/getName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -116,19 +114,19 @@ function EnrollCourses() {
   }, []);
 
   const fetchCourseInfo = (courseId) => {
-    fetch("https://sxt9335.uta.cloud/fetchCourses.php", {
+    fetch(`${url2}/getCourseInfo`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: `courseId=${courseId}`,
     })
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((data) => {
-        const [courseName, instructorName, period] = data.split(","); // Split data into an array
-        setCourseName(courseName);
-        setInstructorName(instructorName);
-        setPeriod(period);
+    
+        setCourseName(data.course_name);
+        setInstructorName(data.instructor_name);
+        setPeriod(data.course_period);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -149,6 +147,7 @@ function EnrollCourses() {
     setSelectedCourse(selectedCourseId);
     fetchCourseInfo(selectedCourseId);
   };
+  console.log('classes',classes);
   return (
     <div className="signbody">
       <header>
@@ -166,12 +165,15 @@ function EnrollCourses() {
               >
                 <option value="">Select a course</option>
                 {course.map((courses, index) => {
-                  console.log(courses);
-                  const c= classes.find((c) => c.courseId === courses);
+               
+                  const c= classes.find((c) => {
+                    console.log('calsls',c );
+                    console.log('courses',courses );
+                    return c.courseId === courses.course_id});
                   if(!c){
                     return (
-                      <option key={index} value={courses}>
-                        {courses}
+                      <option key={index} value={courses.course_id}>
+                        {courses.course_name}
                       </option>
                     )
                   }

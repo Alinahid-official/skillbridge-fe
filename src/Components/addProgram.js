@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/signup.css";
 
 import avatar from "../assets/logo.png";
@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { url2 } from "../globalUrl";
+import axios from "axios";
 
 function AddProgram() {
   const { search } = useLocation();
@@ -18,10 +19,20 @@ function AddProgram() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [venue, setVenue] = useState("");
+  const [role, setRole] = useState("");
 
   const goBack = () => {
     window.history.back();
   };
+  const getRole = async() => {
+    try{
+      const res = await axios.post(`${url2}/getRole`, {email: email});
+      console.log(res);
+      setRole(res.data)
+    }catch(error){
+      console.log(error);
+    }
+  }
   const handleFormSubmit = (e) => {
     e.preventDefault();
     fetch(`${url2}/addProgram`, {
@@ -37,7 +48,10 @@ function AddProgram() {
         if (data === "Program added successfully") {
           Swal.fire("Success!", "Program added successfully!", "success").then(
             (result) => {
-              if (result.isConfirmed) {
+              if (result.isConfirmed && role === "Program Coordinator") {
+                window.location.href = `/pc?email=${email}`;
+              }
+              else if (result.isConfirmed ) {
                 window.location.href = `/admin?email=${email}`;
               }
             }
@@ -46,7 +60,10 @@ function AddProgram() {
           alert(data);
           Swal.fire("Oops!", "Failed to add Program", "error").then(
             (result) => {
-              if (result.isConfirmed) {
+              if (result.isConfirmed && role === "Program Coordinator") {
+                window.location.href = `/pc?email=${email}`;
+              }
+              else if (result.isConfirmed ) {
                 window.location.href = `/admin?email=${email}`;
               }
             }
@@ -60,13 +77,19 @@ function AddProgram() {
           "An error occurred while adding the Program.",
           "error"
         ).then((result) => {
-          if (result.isConfirmed) {
+          if (result.isConfirmed && role === "Program Coordinator") {
+            window.location.href = `/pc?email=${email}`;
+          }
+          else if (result.isConfirmed ) {
             window.location.href = `/admin?email=${email}`;
           }
         });
       });
   };
-
+  useEffect(() => {
+    getRole();
+  }, []);
+  console.log(role);
   return (
     <div>
       <html lang="en">

@@ -53,7 +53,7 @@ function EditCourse() {
           Swal.fire("Success!", "Course updated successfully!", "success").then(
             (result) => {
               if (result.isConfirmed) {
-                if (name === null) {
+                if (instructor_name === null) {
                   window.location.href = `/admin?email=${email}`;
                 } else {
                   window.location.href = `/instructor?email=${email}`;

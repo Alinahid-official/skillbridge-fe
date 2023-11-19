@@ -265,30 +265,35 @@ function Student() {
                 </tr>
               </thead>
               <tbody>
-                {classes?.map((res, index) => (
-                  <tr key={index}>
-                    <td>{res.courseName}</td>
-                    <td>{res.exam}</td>
-                    <td>{res.startTime}</td>
-                    <td>{res.endTime}</td>
-                    <td>{res.quizlink}</td>
-                    <td>{res.resources}</td>
-                    {/* <td>
-                      <i className="fas fa-eye"></i>
-                      &nbsp;
-                      <i
-                        className="fas fa-edit"
-                        // onClick={() => handleProgramEdit(res)}
-                      ></i>
-                      &nbsp;
-                      <i
-                        className="fas fa-trash"
-                        // onClick={() => handleProgramDelete(res.UTA_ID)}
-                      ></i>
-                      &nbsp;
-                    </td> */}
-                  </tr>
-                ))}
+                {classes?.map((res, index) => {
+                  if (res.exam){
+                    return(
+                      <tr key={index}>
+                      <td>{res.courseName}</td>
+                      <td>{res.exam}</td>
+                      <td>{res.startTime}</td>
+                      <td>{res.endTime}</td>
+                      <td>{res.quizlink}</td>
+                      <td>{res.resources}</td>
+                      {/* <td>
+                        <i className="fas fa-eye"></i>
+                        &nbsp;
+                        <i
+                          className="fas fa-edit"
+                          // onClick={() => handleProgramEdit(res)}
+                        ></i>
+                        &nbsp;
+                        <i
+                          className="fas fa-trash"
+                          // onClick={() => handleProgramDelete(res.UTA_ID)}
+                        ></i>
+                        &nbsp;
+                      </td> */}
+                    </tr>
+                    )
+                  }
+                 
+})}
               </tbody>
             </table>
           </div>

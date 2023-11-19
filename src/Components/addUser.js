@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router-dom";
+import { url2 } from "../globalUrl";
 
 function AddUser() {
   const [firstname, setFirstname] = useState("");
@@ -42,7 +43,7 @@ function AddUser() {
       Swal.fire("Error!", "Please select a role", "error");
       return;
     }
-    fetch("https://sxt9335.uta.cloud/signup.php", {
+    fetch(`${url2}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -88,9 +89,9 @@ function AddUser() {
           "An error occurred while registering the user.",
           "error"
         ).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/admin?email=${passemail}`;
-          }
+          // if (result.isConfirmed) {
+          //   window.location.href = `/admin?email=${passemail}`;
+          // }
         });
       });
   };

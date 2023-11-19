@@ -7,7 +7,7 @@ import DropDownProfile from "./dropdown";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { url2 } from "../globalUrl";
-import { set } from "lodash";
+import { set, zip } from "lodash";
 function Instructor() {
   const [openProfile, setOpenProfile] = useState(false);
   const { search } = useLocation();
@@ -38,6 +38,7 @@ function Instructor() {
       .then((response) => response.text())
       .then((data) => {
         setName(data);
+        loadCourses(data);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -56,7 +57,7 @@ function Instructor() {
     let c= 0;
     let d= 0;
     studentResults?.data?.map((res, index) => {
-      if (res.status === "no" && res.professorName === name) {
+      if (res.professorName === name && res.quiz==null) {
         c++;
       }
       if (res.status === "yes" && res.professorName === name) {
@@ -71,14 +72,15 @@ function Instructor() {
     console.log(studentResults.data.studentResults);
   };
 
-  const loadCourses = async () => {
+  const loadCourses = async (name) => {
     const courseResults = await axios.get(
       `${url2}/viewCourses`
     );
-    setCourse(courseResults.data.filter((res, index) => res.professorName === name));
-
+    const c = courseResults.data.filter((res) => res.instructor_name === name);
+    setCourse(c);
     console.log("inside courseResults view");
-    console.log(courseResults.data.courseResults);
+    setCourses(c.length);
+    console.log(courseResults.data);
   }
   
   const handleStudentEdit = (student) => {
@@ -92,6 +94,7 @@ function Instructor() {
   };
   useEffect(() => {
     loadStudents();
+    
   }, []);
 
   const handleFormSubmit = (e) => {
@@ -192,9 +195,9 @@ function Instructor() {
       });
   };
   const handleEdit = (student) => {
-    window.location.href = `/editCourse?email=${passemail}&name=${name}&course_id=${student.courseId}&course_name=${student.courseName}&instructor_name=${student.professorName}&course_period=${student.period}`;
+    window.location.href = `/editCourse?email=${passemail}&instructor_name=${name}&course_id=${student.course_id}&course_name=${student.course_name}&instructor_name=${student.professorName}&course_period=${student.course_period}`;
   };
-  console.log('c',name);
+  // console.log("s", student);
   return (
     <div className="stylecontainer">
       <div className="stylesidebar">
@@ -324,13 +327,13 @@ function Instructor() {
                 </tr>
               </thead>
               <tbody>
-                {student?.map((res, index) => {
-                  if (res.status === "no" && res.professorName === name) {
+                {course?.map((res, index) => {
+                  if (res.instructor_name === name) {
                     return (
                       <tr key={index}>
-                        <td>{res.courseId}</td>
-                        <td>{res.courseName}</td>
-                        <td>{res.period}</td>
+                        <td>{res.course_id}</td>
+                        <td>{res.course_name}</td>
+                        <td>{res.course_period}</td>
                         <td>
                           <i
                             className="fas fa-edit"
@@ -339,7 +342,7 @@ function Instructor() {
                           &nbsp;
                           <i
                             className="fas fa-trash"
-                            onClick={() => handleDelete(res.courseId)}
+                            onClick={() => handleDelete(res.course_id)}
                           ></i>
                           &nbsp;
                         </td>
@@ -397,6 +400,7 @@ function Instructor() {
             </div>
             <table className="styleroles">
               <thead>
+                {}
                 <tr>
                   <th>Student Name</th>
                   <th>Student Email</th>
@@ -410,7 +414,7 @@ function Instructor() {
               </thead>
               <tbody>
                 {student.map((res, index) => {
-                  if (res.status === "yes" && res.professorName === name) {
+                  if (res.status === "yes" && res.professorName === name && res.exam!=null) {
                     return (
                       <tr key={index}>
                         <td>{res.studentName}</td>

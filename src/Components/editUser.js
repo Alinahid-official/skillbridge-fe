@@ -76,7 +76,7 @@ function EditUser() {
           "error"
         ).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = `/admin?email=${email}`;
+            // window.location.href = `/admin?email=${email}`;
           }
         });
       });

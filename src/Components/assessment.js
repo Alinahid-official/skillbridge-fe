@@ -25,6 +25,7 @@ function Assessment() {
   const [coursePeriod, setPeriod] = useState("");
   const [name, setName] = useState("");
   const [student, setStudent] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ function Assessment() {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: `courseId=${selectedCourse}&exam=${exam}&startTime=${startTime}&endTime=${endTime}&quizlink=${quizlink}&resources=${resources}`,
+      body: `courseId=${selectedCourse}&exam=${exam}&startTime=${startTime}&endTime=${endTime}&quizlink=${quizlink}&resources=${resources}&professorName=${name}`,
     })
       .then((response) => response.text())
       .then((data) => {
@@ -66,11 +67,11 @@ function Assessment() {
         });
       });
   };
-  const loadStudents = async () => {
+  const loadCourses = async () => {
     const studentResults = await axios.get(
-      `${url2}/viewQuiz`
+      `${url2}/viewCourses`
     );
-    setStudent(studentResults.data);
+    setCourses(studentResults.data);
     console.log("inside studentResults view");
     console.log(studentResults.data.studentResults);
   };
@@ -100,7 +101,7 @@ function Assessment() {
         console.error("Error:", error);
       });
 
-      loadStudents();
+      loadCourses();
       
   }, []);
 
@@ -141,11 +142,11 @@ function Assessment() {
                   onChange={handleCourseSelect}
                 >
                   <option value="">Select a course</option>
-                  {student?.map((res, index) => {
-                    if (res.status === "no" && res.professorName === name){
+                  {courses?.map((res, index) => {
+                    if (res.instructor_name === name){
                       return (
-                        <option key={index} value={res.courseId}>
-                          {res.courseId}
+                        <option key={index} value={res.course_id}>
+                          {res.course_name}
                         </option>
                       );
                     }
