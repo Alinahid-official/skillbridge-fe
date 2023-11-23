@@ -81,7 +81,7 @@ function ProgramCoordinator() {
   };
   const handleGradeEdit = (student) => {
     console.log(student.email, "jhdsgjhsdgfjhfj");
-    window.location.href = `/editGrade?passemail=${email}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=pc`;
+    window.location.href = `/editGrade?id=${student.id}&passemail=${email}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=pc`;
   };
   const handleProgramEdit = (program) => {
     window.location.href = `/editPC?email=${email}&p_id=${program.p_id}&programName=${program.programName}&programDescription=${program.programDescription}&programOrganizer=${program.programOrganizer}&startDate=${program.startDate}&endDate=${program.endDate}`;
@@ -242,6 +242,12 @@ function ProgramCoordinator() {
             <Link to={`/messagechat?name=${name}&email=${email}`}>
               <i class="fa fa-comment" aria-hidden="true"></i>
               <div className="pctitle">WebChat</div>
+            </Link>
+          </li>
+          <li>
+            <Link to={`/aiBot?name=${name}&email=${email}`}>
+              <i class="fa fa-comment" aria-hidden="true"></i>
+              <div className="styletitle">AI Bot</div>
             </Link>
           </li>
         </ul>
@@ -484,7 +490,7 @@ function ProgramCoordinator() {
               </thead>
               <tbody>
                 {student?.map((res, index) => {
-                  if (res.status === "yes" ) {
+                  if (res.status === "no" ) {
                     return (
                       <tr key={index}>
                         <td>{res.studentName}</td>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../css/modal.css"; // Import your CSS file
+import { url2 } from "../globalUrl";
 
 const Modal = ({ email, closeModal }) => {
   const [modal, setModal] = useState(false);
@@ -7,18 +8,19 @@ const Modal = ({ email, closeModal }) => {
   const [lname, setLname] = useState("");
   const [role, setRole] = useState("");
   const loadPrograms = async () => {
-    fetch("https://sxt9335.uta.cloud/fetchModal.php", {
+    fetch(`${url2}/getUser`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: `email=${email}`,
     })
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((data) => {
-        const [fname, lname, role] = data.split(",");
-        setFname(fname);
-        setLname(lname);
+        console.log('name',data);
+        const {first_name, last_name, role} = data;
+        setFname(first_name);
+        setLname(last_name);
         setRole(role);
       })
       .catch((error) => {

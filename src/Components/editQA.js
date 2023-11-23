@@ -5,6 +5,7 @@ import avatar from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { url2 } from "../globalUrl";
 
 function EditQA() {
   const { search } = useLocation();
@@ -38,7 +39,7 @@ function EditQA() {
     formData.append("qaPolicies", QA.qaPolicies);
     formData.append("year", QA.year);
 
-    fetch("https://sxt9335.uta.cloud/editQA.php", {
+    fetch(`${url2}/editPolicy`, {
       method: "POST",
       body: formData,
     })

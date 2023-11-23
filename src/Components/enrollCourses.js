@@ -27,7 +27,7 @@ function EnrollCourses() {
     formData.append("professorName", instructorName);
     formData.append("period", coursePeriod);
 
-    fetch(`${url2}/addQuiz`, {
+    fetch(`${url2}/enrollCourse`, {
       method: "POST",
       body: formData,
     })

@@ -39,6 +39,7 @@ function Instructor() {
       .then((data) => {
         setName(data);
         loadCourses(data);
+        loadStudents(data)
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -49,7 +50,7 @@ function Instructor() {
   }, []);
   const [student, setStudent] = useState([]);
 
-  const loadStudents = async () => {
+  const loadStudents = async (name) => {
     const studentResults = await axios.get(
       `${url2}/viewQuiz`
     );
@@ -57,7 +58,7 @@ function Instructor() {
     let c= 0;
     let d= 0;
     studentResults?.data?.map((res, index) => {
-      if (res.professorName === name && res.quiz==null) {
+      if (res.professorName === name && res.exam==null) {
         c++;
       }
       if (res.status === "yes" && res.professorName === name) {
@@ -84,18 +85,19 @@ function Instructor() {
   }
   
   const handleStudentEdit = (student) => {
-    console.log(student.email, "jhdsgjhsdgfjhfj");
-    window.location.href = `/editQuiz?passemail=${passemail}&studentName=${student.studentName}&email=${student.email}&exam=${student.exam}&startTime=${student.startTime}&endTime=${student.endTime}&quizlink=${student.quizlink}`;
+    // console.log(student.email, "jhdsgjhsdgfjhfj");
+    window.location.href = `/editQuiz?id=${student.id}&passemail=${passemail}&studentName=${student.studentName}&email=${student.email}&exam=${student.exam}&startTime=${student.startTime}&endTime=${student.endTime}&quizlink=${student.quizlink}`;
   };
 
   const handleGradeEdit = (student) => {
-    console.log(student.email, "jhdsgjhsdgfjhfj");
-    window.location.href = `/editGrade?passemail=${passemail}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=instructor`;
+
+    // console.log( student);
+    window.location.href = `/editGrade?id=${student.id}&passemail=${passemail}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=instructor`;
   };
-  useEffect(() => {
-    loadStudents();
+  // useEffect(() => {
+  //   loadStudents();
     
-  }, []);
+  // }, []);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -248,6 +250,12 @@ function Instructor() {
               <div className="styletitle">WebChat</div>
             </Link>
           </li>
+          <li>
+            <Link to={`/aiBot?name=${name}&email=${passemail}`}>
+              <i class="fa fa-comment" aria-hidden="true"></i>
+              <div className="styletitle">AI Bot</div>
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="stylemain">
@@ -374,7 +382,7 @@ function Instructor() {
               </thead>
               <tbody>
                 {student.map((res, index) => {
-                  console.log('rr',res);
+                  // console.log('rr',res);
                   if (res.status === "yes" && res.professorName === name) {
                     return (
                       <tr key={index}>
@@ -414,7 +422,7 @@ function Instructor() {
               </thead>
               <tbody>
                 {student.map((res, index) => {
-                  if (res.status === "yes" && res.professorName === name && res.exam!=null) {
+                  if (res.professorName === name && res.exam!=null) {
                     return (
                       <tr key={index}>
                         <td>{res.studentName}</td>

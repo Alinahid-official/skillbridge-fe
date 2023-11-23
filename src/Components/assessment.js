@@ -61,9 +61,9 @@ function Assessment() {
           "An error occurred while registering the user.",
           "error"
         ).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = `/instructor?email=${email}`;
-          }
+          // if (result.isConfirmed) {
+          //   window.location.href = `/instructor?email=${email}`;
+          // }
         });
       });
   };

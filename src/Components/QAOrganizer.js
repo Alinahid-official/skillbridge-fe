@@ -39,7 +39,7 @@ function QAOrganizer() {
   };
   const handleGradeEdit = (student) => {
     console.log(student.email, "jhdsgjhsdgfjhfj");
-    window.location.href = `/editGrade?passemail=${email}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=QAOrganizer`;
+    window.location.href = `/editGrade?id=${student.id}&passemail=${email}&studentName=${student.studentName}&courseId=${student.courseId}&email=${student.email}&grade=${student.grade}&percentage=${student.percentage}&resources=${student.resources}&quizlink=${student.quizlink}&role=QAOrganizer`;
   };
   useEffect(() => {
     loadQA();
@@ -204,6 +204,12 @@ function QAOrganizer() {
               <div className="styletitle">WebChat</div>
             </Link>
           </li>
+          <li>
+            <Link to={`/aiBot?role=admin?name=${name}&email=${email}`}>
+              <i class="fa fa-comment" aria-hidden="true"></i>
+              <div className="styletitle">AI Bot</div>
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="stylemain">
@@ -314,7 +320,7 @@ function QAOrganizer() {
               </thead>
               <tbody>
                 {student?.map((res, index) => {
-                  if (res.status === "yes" ) {
+                  if (res.status === "no" ) {
                     return (
                       <tr key={index}>
                         <td>{res.studentName}</td>

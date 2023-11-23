@@ -6,72 +6,93 @@ import avatar from "../assets/logo.png";
 import avatar1 from "../assets/avatar.png";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { url2 } from "../globalUrl";
+import axios from "axios";
+import OpenAI from 'openai';
+
+import { useLocation } from "react-router-dom";
+
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [emailreset, setEmailReset] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const email = params.get("email");
+  const [otp, setOtp] = useState("");
+  const role= params.get("role");
 
-  const handleFormSubmit = (e) => {
+  const sendOtp = async(e) => {
     e.preventDefault();
-    fetch(`${url2}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `email=${email}&password=${password}`,
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        if (data.startsWith("Login Successful")) {
-          const roleIndex = data.indexOf("| Role:");
-          if (roleIndex !== -1) {
-            const userRole = data.substring(roleIndex + 8).trim();
-            console.log(userRole)            
-            switch (userRole) {
-              case "Admin":
-                window.location.href = `/admin?email=${email}`;
-                break;
-              case "Student":
-                window.location.href = `/student?email=${email}`;
-                break;
-              case "Instructor":
-                window.location.href = `/instructor?email=${email}`;
-                break;
-              case "Program Coordinator":
-                window.location.href = `/pc?email=${email}`;
-                break;
-              default:
-                window.location.href = `/QAOrganizer?email=${email}`;
-                break;
-            }
-          }
-        } else if(data.startsWith("Not Verified")){
-          const roleIndex = data.indexOf("| Role:");
-          if (roleIndex !== -1){
-            const userRole = data.substring(roleIndex + 8).trim();
-            Swal.fire("Success!", "Please verify you Number", "success").then(
-              (result) => {
-                if (result.isConfirmed) {
-                  window.location.href = `/verifyNumber?email=${email}&role=${userRole}`;
-                }
-              }
-            );
-          }
-          
-        }else{
-          Swal.fire("Oops!", "Invalid email or password", "error").then(
-            (result) => {
-              if (result.isConfirmed) {
-                window.location.href = "/login";
-              }
-            }
-          );
+    try{
+      // const chatCompletion = await openai.chat.completions.create({
+      //   messages: [{ role: 'assistant', content: 'what is a react.js i nwe development' }],
+      //   model: 'gpt-3.5-turbo',
+      // });
+      // console.log(chatCompletion.data);
+        const res = await axios.post(`${url2}/sendOtp`, {phone: phone, email: email})
+        if(res.data){
+          alert("OTP sent successfully")
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+    }catch(e){
+      console.log(e)
+      Swal.fire(
+        "Oops!",
+        "Failed to send otp. Please try again.",
+        "error"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
       });
+    }
+  };
+  const verifyNumber = async(e) => {
+    e.preventDefault();
+    try{
+      // const chatCompletion = await openai.chat.completions.create({
+      //   messages: [{ role: 'assistant', content: 'what is a react.js i nwe development' }],
+      //   model: 'gpt-3.5-turbo',
+      // });
+      // console.log(chatCompletion.data);
+        const res = await axios.post(`${url2}/verifyNumber`, {otp: otp, email: email})
+       
+          if (res.data.startsWith("Login Successful")) {
+            const roleIndex = res.data.indexOf("| Role:");
+            if (roleIndex !== -1) {
+              const userRole = res.data.substring(roleIndex + 8).trim();
+              console.log(userRole)            
+              switch (userRole) {
+                case "Admin":
+                  window.location.href = `/admin?email=${email}`;
+                  break;
+                case "Student":
+                  window.location.href = `/student?email=${email}`;
+                  break;
+                case "Instructor":
+                  window.location.href = `/instructor?email=${email}`;
+                  break;
+                case "Program Coordinator":
+                  window.location.href = `/pc?email=${email}`;
+                  break;
+                default:
+                  window.location.href = `/QAOrganizer?email=${email}`;
+                  break;
+              }
+            }
+        }
+    }catch(e){
+      console.log(e)
+      Swal.fire(
+        "Oops!",
+        "Failed to send otp. Please try again.",
+        "error"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    }
   };
 
   const handleFormReset = (e) => {
@@ -149,40 +170,50 @@ function Login() {
         </Link>
       </header>
       <div className="login-wrapper">
-        <form onSubmit={handleFormSubmit} className="loginform">
+        <form  className="loginform">
           <img src={avatar1} alt="skillbridge" />
-          <h2>Login</h2>
+          <h2>Verify Number</h2>
+          <div style={{display:'flex'}}>
           <div className="logininput-group">
             <input
               type="text"
-              name="email"
-              onChange={(e) => setEmail(e.target.value)}
+              name="phone"
+              onChange={(e) => setPhone(e.target.value)}
               id="loginUser"
               required
             />
-            <label htmlFor="loginUser">Email</label>
+            <label htmlFor="loginUser">Phone Number</label>
           </div>
+          <button style={{height:'40px',marginLeft:'20px', color:"black",backgroundColor:"#ffff"}} onClick={sendOtp}>send otp</button>
+          </div>
+          <div style={{display:'flex'}}>
           <div className="logininput-group">
             <input
-              type="password"
-              name="password"
-              onChange={(e) => setPassword(e.target.value)}
-              id="loginPassword"
+              type="text"
+              name="otp"
+              onChange={(e) => setOtp(e.target.value)}
+              id="loginUser"
               required
             />
-            <label htmlFor="loginPassword">Password</label>
+            <label htmlFor="loginUser">Otp</label>
           </div>
-          <input type="submit" value="Login" className="loginsubmit-btn" />
-          
-          <Link to="/forgetPassword" className="login-link">
-              Forget Password?
-            </Link>
+          <button style={{height:'40px',marginLeft:'20px', color:"black",backgroundColor:"#ffff"}} onClick={verifyNumber}>verify otp</button>
+          </div>
+         
+          {/* <input type="submit" value="Generated password" className="loginsubmit-btn" /> */}
+          {/* <a href="#forgot-pw" class="forgot-pw">
+            Need help?
+          </a> */}
           <p className="login-para" style={{ fontSize: "1.5rem" }}>
             New to SkillBridge?<span> </span>
             <Link to="/signup" className="login-link">
               Sign up now
+            </Link> <br></br>
+            <Link to={`/${role}?email=${email}`} className="login-link">
+             skip verification
             </Link>
           </p>
+          
         </form>
         <div id="forgot-pw">
           <form onSubmit={handleFormReset} className="loginform">

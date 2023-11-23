@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { url2 } from "../globalUrl";
+import axios from "axios";
 function EnrollPrograms() {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
@@ -17,6 +18,7 @@ function EnrollPrograms() {
   const [name, setName] = useState("");
   const [s, setS] = useState("");
   const [ss, setSS] = useState("");
+  const [enrolldeProgram, setEnrolldeProgram] = useState([]);
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -35,10 +37,10 @@ function EnrollPrograms() {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data === "Course enrolled successfully") {
+        if (data === "Program Enrolled successfully") {
           Swal.fire(
             "Success!",
-            "Course enrolled successfully!",
+            "Program Enrolled successfully!",
             "success"
           ).then((result) => {
             if (result.isConfirmed) {
@@ -68,6 +70,14 @@ function EnrollPrograms() {
         });
       });
   };
+  const loadPrograms2 = async () => {
+    const programResults = await axios.get(
+      `${url2}/viewEnrolledPrograms`
+    );
+    setEnrolldeProgram(programResults.data.filter((program) => program.semail === email));
+    console.log("inside proframs view");
+    console.log(programResults.data.AllPrograms);
+  };
   useEffect(() => {
     fetch(`${url2}/viewPrograms`)
       .then((response) => response.json())
@@ -91,16 +101,18 @@ function EnrollPrograms() {
       .catch((error) => {
         console.error("Error:", error);
       });
+      loadPrograms2();
   }, []);
 
   const fetchCourseInfo = (courseId) => {
     console.log('cid',courseId);
     const sc= course.find((course) =>{
       console.log('course',course,courseId);
-      return course.p_id == courseId;
+      return course.id == courseId;
     });
     setCourseName(sc?.programOrganizer);
         setInstructorName(sc?.programDescription);
+        setSelectedCourse(sc.programName);
         setPeriod(sc?.startDate);
         setS(sc?.endDate);
         setSS(sc?.venue);
@@ -136,9 +148,10 @@ function EnrollPrograms() {
 
   const handleCourseSelect = (e) => {
     const selectedCourseId = e.target.value;
-    setSelectedCourse(selectedCourseId);
+    
     fetchCourseInfo(selectedCourseId);
   };
+  console.log("enrolldeProgram", enrolldeProgram);
   return (
     <div className="signbody">
       <header>
@@ -146,7 +159,7 @@ function EnrollPrograms() {
       </header>
       <div className="signlogin-wrapper">
         <form onSubmit={handleFormSubmit} method="POST" className="signform">
-          <h3>Enroll Courses</h3>
+          <h3>Enroll Program</h3>
           <div className="signinput-group">
             <div className="signselect-container">
               <select
@@ -155,11 +168,17 @@ function EnrollPrograms() {
                 onChange={handleCourseSelect}
               >
                 <option value="">Select a program</option>
-                {course.map((courses, index) => (
-                  <option key={index} value={courses?.p_id}>
-                    {courses.programName}
-                  </option>
-                ))}
+                {course.map((courses, index) => {
+                  console.log('courses',courses);
+                  if(enrolldeProgram.find((program) => program.programName === courses.programName) === undefined){
+                    return (
+                      <option key={index} value={courses?.id}>
+                      {courses.programName}
+                    </option>
+                    )
+                  }
+                }
+                )}
               </select>
 
               <div className="signselect-arrow"></div>

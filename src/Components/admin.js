@@ -198,7 +198,7 @@ function Admin() {
   };
 
   const handleEdit = (course) => {
-    window.location.href = `/editCourse?email=${email}&course_id=${course.course_id}&course_name=${course.course_name}&instructor_name=${course.instructor_name}&course_period=${course.course_period}`;
+    window.location.href = `/editCourse?email=${email}&course_id=${course.course_id}&course_name=${course.course_name}&instructor_name=${course.instructor_name}&course_period=${course.course_period}&role=admin`;
   };
 
   useEffect(() => {
@@ -349,9 +349,21 @@ function Admin() {
             </Link>
           </li>
           <li>
+            <Link to={`/updatePassword?email=${email}`}>
+              <i class="fa fa-user-md" aria-hidden="true"></i>
+              <div className="styletitle">Update Password</div>
+            </Link>
+          </li>
+          <li>
             <Link to={`/messagechat?name=${name}&email=${email}`}>
               <i class="fa fa-comment" aria-hidden="true"></i>
               <div className="styletitle">WebChat</div>
+            </Link>
+          </li>
+          <li>
+            <Link to={`/aiBot?name=${name}&email=${email}`}>
+              <i class="fa fa-comment" aria-hidden="true"></i>
+              <div className="styletitle">AI Bot</div>
             </Link>
           </li>
         </ul>

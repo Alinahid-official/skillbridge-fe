@@ -14,7 +14,7 @@ function EditGrade() {
   const intialEmail_id = searchParams.get("email");
   const role = searchParams.get("role");
   const courseId = searchParams.get("courseId");
-  console.log("email jsdjcf", intialEmail_id);
+  // console.log("email jsdjcf", intialEmail_id);
 
   const intialQuiz = {
     studentName: searchParams.get("studentName"),
@@ -22,6 +22,7 @@ function EditGrade() {
     grade: searchParams.get("grade"),
     percentage: searchParams.get("percentage"),
     resources: searchParams.get("resources"),
+    id: searchParams.get("id"),
   };
 
   const [exam, setExam] = useState(intialQuiz);
@@ -43,8 +44,9 @@ function EditGrade() {
     formData.append("grade", exam.grade);
     formData.append("percentage", exam.percentage);
     formData.append("resources", exam.resources);
+    formData.append("id", intialQuiz.id);
     alert(intialEmail_id);
-    alert(exam.grade);
+    // alert(exam.grade);
     fetch(`${url2}/editGrade`, {
       method: "POST",
       body: formData,

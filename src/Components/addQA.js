@@ -17,7 +17,7 @@ function AddQA() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    fetch(`${url2}/addPolies`, {
+    fetch(`${url2}/addPolicy`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

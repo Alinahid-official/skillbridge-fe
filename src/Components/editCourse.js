@@ -12,6 +12,7 @@ function EditCourse() {
   const searchParams = new URLSearchParams(search);
   const email = searchParams.get("email");
   const name = searchParams.get("name");
+  const role = searchParams.get("role");
   const initialcourse_id = searchParams.get("course_id");
   const [instructor_name, setInstructor] = useState("");
   const [instructors, setInstructors] = useState([]);
@@ -53,7 +54,7 @@ function EditCourse() {
           Swal.fire("Success!", "Course updated successfully!", "success").then(
             (result) => {
               if (result.isConfirmed) {
-                if (instructor_name === null) {
+                if (role === "admin") {
                   window.location.href = `/admin?email=${email}`;
                 } else {
                   window.location.href = `/instructor?email=${email}`;

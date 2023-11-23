@@ -72,9 +72,9 @@ function Signup() {
         } else {
           Swal.fire("Oops!", "Failed to register user", "error").then(
             (result) => {
-              // if (result.isConfirmed) {
-              //   window.location.href = "/signup";
-              // }
+              if (result.isConfirmed) {
+                window.location.href = "/signup";
+              }
             }
           );
         }

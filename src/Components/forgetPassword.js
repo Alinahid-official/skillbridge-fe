@@ -6,72 +6,36 @@ import avatar from "../assets/logo.png";
 import avatar1 from "../assets/avatar.png";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import { url2 } from "../globalUrl";
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [emailreset, setEmailReset] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async(e) => {
     e.preventDefault();
-    fetch(`${url2}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `email=${email}&password=${password}`,
-    })
-      .then((response) => response.text())
-      .then((data) => {
-        if (data.startsWith("Login Successful")) {
-          const roleIndex = data.indexOf("| Role:");
-          if (roleIndex !== -1) {
-            const userRole = data.substring(roleIndex + 8).trim();
-            console.log(userRole)            
-            switch (userRole) {
-              case "Admin":
-                window.location.href = `/admin?email=${email}`;
-                break;
-              case "Student":
-                window.location.href = `/student?email=${email}`;
-                break;
-              case "Instructor":
-                window.location.href = `/instructor?email=${email}`;
-                break;
-              case "Program Coordinator":
-                window.location.href = `/pc?email=${email}`;
-                break;
-              default:
-                window.location.href = `/QAOrganizer?email=${email}`;
-                break;
-            }
-          }
-        } else if(data.startsWith("Not Verified")){
-          const roleIndex = data.indexOf("| Role:");
-          if (roleIndex !== -1){
-            const userRole = data.substring(roleIndex + 8).trim();
-            Swal.fire("Success!", "Please verify you Number", "success").then(
-              (result) => {
-                if (result.isConfirmed) {
-                  window.location.href = `/verifyNumber?email=${email}&role=${userRole}`;
-                }
-              }
-            );
-          }
-          
-        }else{
-          Swal.fire("Oops!", "Invalid email or password", "error").then(
+    try{
+        const res = await axios.post(`${url2}/forgetPassword`, {email: email})
+        if(res.data){
+          Swal.fire("Success!", "Email Sent successfully!", "success").then(
             (result) => {
               if (result.isConfirmed) {
                 window.location.href = "/login";
               }
-            }
-          );
+            })
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    }catch(e){
+      // Swal.fire(
+      //   "Oops!",
+      //   "Failed to send email. Please try again.",
+      //   "error"
+      // ).then((result) => {
+      //   if (result.isConfirmed) {
+      //     window.location.reload();
+      //   }
+      // });
+    }
   };
 
   const handleFormReset = (e) => {
@@ -162,21 +126,11 @@ function Login() {
             />
             <label htmlFor="loginUser">Email</label>
           </div>
-          <div className="logininput-group">
-            <input
-              type="password"
-              name="password"
-              onChange={(e) => setPassword(e.target.value)}
-              id="loginPassword"
-              required
-            />
-            <label htmlFor="loginPassword">Password</label>
-          </div>
-          <input type="submit" value="Login" className="loginsubmit-btn" />
           
-          <Link to="/forgetPassword" className="login-link">
-              Forget Password?
-            </Link>
+          <input type="submit" value="Reset password" className="loginsubmit-btn" />
+          {/* <a href="#forgot-pw" class="forgot-pw">
+            Need help?
+          </a> */}
           <p className="login-para" style={{ fontSize: "1.5rem" }}>
             New to SkillBridge?<span> </span>
             <Link to="/signup" className="login-link">

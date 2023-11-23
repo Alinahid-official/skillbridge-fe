@@ -148,6 +148,12 @@ function Student() {
               <div className="styletitle">WebChat</div>
             </Link>
           </li>
+          <li>
+            <Link to={`/aiBot?name=${name}&email=${email}`}>
+              <i class="fa fa-comment" aria-hidden="true"></i>
+              <div className="styletitle">AI Bot</div>
+            </Link>
+          </li>
         </ul>
       </div>
       <div className="stylemain">
@@ -216,6 +222,7 @@ function Student() {
 
         <div className="stylecards">
           {classes?.map((res, index) => (
+            res.status==='yes'?
             <div
               className="homeheroservice-item"
               key={index}
@@ -236,9 +243,9 @@ function Student() {
                 <br />
                 Professor Name: {res.professorName}
                 <br />
-                Grade: {res.grade}
+                {/* Grade: {res.grade} */}
               </p>
-            </div>
+            </div>:null
           ))}
         </div>
 
@@ -266,7 +273,7 @@ function Student() {
               </thead>
               <tbody>
                 {classes?.map((res, index) => {
-                  if (res.exam){
+                  if (res.exam && email === res.email && res.grade === null){
                     return(
                       <tr key={index}>
                       <td>{res.courseName}</td>
@@ -275,6 +282,60 @@ function Student() {
                       <td>{res.endTime}</td>
                       <td>{res.quizlink}</td>
                       <td>{res.resources}</td>
+                      {/* <td>
+                        <i className="fas fa-eye"></i>
+                        &nbsp;
+                        <i
+                          className="fas fa-edit"
+                          // onClick={() => handleProgramEdit(res)}
+                        ></i>
+                        &nbsp;
+                        <i
+                          className="fas fa-trash"
+                          // onClick={() => handleProgramDelete(res.UTA_ID)}
+                        ></i>
+                        &nbsp;
+                      </td> */}
+                    </tr>
+                    )
+                  }
+                 
+})}
+              </tbody>
+            </table>
+          </div>
+          <div className="StyleAllRoles">
+            <div className="styleheading">
+              {/* <Link to={`/addProgram?email=${email}`} className="stylebtn">
+                Add Program
+              </Link> */}
+              <h2>Graded Assessments</h2>
+            </div>
+            <table className="styleroles">
+              <thead>
+                <tr>
+                  <th>Course Name</th>
+                  <th>Exam Name</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Quiz Link</th>
+                  <th>Course Materials</th>
+                  <th>Grade</th>
+                  {/* <th>Actions</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                {classes?.map((res, index) => {
+                  if (res.exam && email === res.email && res.grade !== null){
+                    return(
+                      <tr key={index}>
+                      <td>{res.courseName}</td>
+                      <td>{res.exam}</td>
+                      <td>{res.startTime}</td>
+                      <td>{res.endTime}</td>
+                      <td>{res.quizlink}</td>
+                      <td>{res.resources}</td>
+                      <td>{res.grade}</td>
                       {/* <td>
                         <i className="fas fa-eye"></i>
                         &nbsp;

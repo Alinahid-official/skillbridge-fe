@@ -27,6 +27,10 @@ import AddQA from "./Components/addQA";
 import EnrollCourses from "./Components/enrollCourses";
 import EnrollProgram from "./Components/enrollP";
 import PCReport from "./Components/pcReports";
+import ForgetPassword from "./Components/forgetPassword";
+import VerifyNumber from "./Components/verifyNumber";
+import AiBot from "./Components/aiBot";
+import UpdatePassword from "./Components/updatePassword";
 
 function App() {
   return (
@@ -35,8 +39,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="Home" element={<Home />} />
+          <Route path="aiBot" element={<AiBot />} />
           <Route path="signup" element={<Signup />} />
           <Route path="login" element={<Login />} />
+          <Route path="forgetPassword" element={<ForgetPassword />} />
+          <Route path="verifyNumber" element={<VerifyNumber />} />
+          <Route path="updatePassword" element={<UpdatePassword />} />
           <Route path="admin" element={<Admin />} />
           <Route path="instructor" element={<Instructor />} />
           <Route path="QAOrganizer" element={<QAOrganizer />} />
